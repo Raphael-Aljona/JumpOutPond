@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
             if (powerSlider != null)
             {
                 powerSlider.value = currentForce / maxJumpDistance;
-                Debug.Log(powerSlider.value);
+                //Debug.Log(powerSlider.value);
             }
         }
 
@@ -64,6 +64,14 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.DownArrow) && charging) { 
             currentForce += chargeSpeed * Time.deltaTime;
             if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
+
+
+            if (powerSlider != null)
+            {
+                powerSlider.value = currentForce / maxJumpDistance;
+                //Debug.Log(powerSlider.value);
+            }
+
         }
 
         if (Input.GetKeyUp(KeyCode.DownArrow) && charging) {
@@ -72,6 +80,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartCoroutine(Move(Vector3.down, currentForce));
 
+            }
+            if (powerSlider)
+            {
+                powerSlider.value = 0;
             }
         }
 
@@ -86,6 +98,13 @@ public class PlayerMovement : MonoBehaviour
         {
             currentForce += chargeSpeed * Time.deltaTime;
             if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
+
+
+            if (powerSlider != null)
+            {
+                powerSlider.value = currentForce / maxJumpDistance;
+                //Debug.Log(powerSlider.value);
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.RightArrow) && charging)
@@ -95,6 +114,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartCoroutine(Move(Vector3.right, currentForce));
 
+            }
+            if (powerSlider)
+            {
+                powerSlider.value = 0;
             }
         }
 
@@ -109,6 +132,12 @@ public class PlayerMovement : MonoBehaviour
         {
             currentForce += chargeSpeed * Time.deltaTime;
             if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
+
+            if (powerSlider != null)
+            {
+                powerSlider.value = currentForce / maxJumpDistance;
+                //Debug.Log(powerSlider.value);
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.LeftArrow) && charging)
@@ -117,6 +146,10 @@ public class PlayerMovement : MonoBehaviour
             if (!isJumping) {
                 StartCoroutine(Move(Vector3.left, currentForce));
 
+            }
+            if (powerSlider)
+            {
+                powerSlider.value = 0;
             }
         }
     }

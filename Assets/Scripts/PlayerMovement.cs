@@ -1,175 +1,91 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float maxJumpDistance = 5f;   
-    public float chargeSpeed = 3f;        
-    public float currentForce = 0f;      
+    public float maxJumpDistance = 5f;
+    public float chargeSpeed = 3f;
+    public float currentForce = 0f;
     private bool charging = false;
 
     private bool isJumping = false;
     public float jumpDuration = 0.5f;
 
-    public Vector3 startPosition;
-
     public Slider powerSlider;
+
+    private Animator animator;
 
     void Start()
     {
-        //startPosition = transform.position;
+        animator = GetComponent<Animator>();
+        animator.SetBool("isJumping", false);
+        animator.SetInteger("direction", 0); 
     }
 
     void Update()
     {
+        // Testa os 4 inputs
+        MovimentInput(KeyCode.UpArrow, Vector3.up, 0);
+        MovimentInput(KeyCode.DownArrow, Vector3.down, 1);
+        MovimentInput(KeyCode.RightArrow, Vector3.right, 2);
+        MovimentInput(KeyCode.LeftArrow, Vector3.left, 3);
+    }
 
-        //Movimento para cima
-        if (Input.GetKeyDown(KeyCode.UpArrow)) {
-            charging = true;
-            currentForce = 0f;
-        }
-
-        if (Input.GetKey(KeyCode.UpArrow) && charging) { 
-            currentForce += chargeSpeed * Time.deltaTime;
-            if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
-
-            if (powerSlider != null)
-            {
-                powerSlider.value = currentForce / maxJumpDistance;
-                //Debug.Log(powerSlider.value);
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.UpArrow) && charging) {
-            charging = false;
-            if (!isJumping)
-            {
-                StartCoroutine(Move(Vector3.up, currentForce));
-            }
-
-            if (powerSlider )
-            {
-                powerSlider.value = 0;
-            }
-        }
-
-        //Movimento para baixo
-        if (Input.GetKeyDown(KeyCode.DownArrow)) {
-            charging = true;
-            currentForce = 0f;
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow) && charging) { 
-            currentForce += chargeSpeed * Time.deltaTime;
-            if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
-
-
-            if (powerSlider != null)
-            {
-                powerSlider.value = currentForce / maxJumpDistance;
-                //Debug.Log(powerSlider.value);
-            }
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.DownArrow) && charging) {
-            charging = false;
-            if (!isJumping)
-            {
-                StartCoroutine(Move(Vector3.down, currentForce));
-
-            }
-            if (powerSlider)
-            {
-                powerSlider.value = 0;
-            }
-        }
-
-        //Movimento para direita
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+    void MovimentInput(KeyCode key, Vector3 dir, int directionIndex)
+    {
+        if (Input.GetKeyDown(key))
         {
             charging = true;
             currentForce = 0f;
+
+            // seta direção no Animator (Idle muda)
+            animator.SetInteger("direction", directionIndex);
         }
 
-        if (Input.GetKey(KeyCode.RightArrow) && charging)
+        if (Input.GetKey(key) && charging)
         {
             currentForce += chargeSpeed * Time.deltaTime;
             if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
 
-
             if (powerSlider != null)
-            {
                 powerSlider.value = currentForce / maxJumpDistance;
-                //Debug.Log(powerSlider.value);
-            }
         }
 
-        if (Input.GetKeyUp(KeyCode.RightArrow) && charging)
+        if (Input.GetKeyUp(key) && charging)
         {
             charging = false;
             if (!isJumping)
             {
-                StartCoroutine(Move(Vector3.right, currentForce));
-
+                StartCoroutine(Move(dir, currentForce, directionIndex));
             }
-            if (powerSlider)
-            {
-                powerSlider.value = 0;
-            }
-        }
 
-        //Movimento para esquerda
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            charging = true;
-            currentForce = 0f;
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow) && charging)
-        {
-            currentForce += chargeSpeed * Time.deltaTime;
-            if (currentForce > maxJumpDistance) currentForce = maxJumpDistance;
-
-            if (powerSlider != null)
-            {
-                powerSlider.value = currentForce / maxJumpDistance;
-                //Debug.Log(powerSlider.value);
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow) && charging)
-        {
-            charging = false;
-            if (!isJumping) {
-                StartCoroutine(Move(Vector3.left, currentForce));
-
-            }
-            if (powerSlider)
-            {
-                powerSlider.value = 0;
-            }
+            if (powerSlider) powerSlider.value = 0;
         }
     }
 
-    IEnumerator Move(Vector3 direction, float force)
+    IEnumerator Move(Vector3 direction, float force, int dirIndex)
     {
         isJumping = true;
+        animator.SetBool("isJumping", true);
+        animator.SetInteger("direction", dirIndex);
 
         Vector3 startPos = transform.position;
         Vector3 endPos = transform.position + direction * force;
         float elapsed = 0f;
 
-        while (elapsed < jumpDuration) { 
-            transform.position = Vector3.Lerp(startPos, endPos, elapsed);
+        while (elapsed < jumpDuration)
+        {
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed / jumpDuration);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         transform.position = endPos;
-        isJumping = false;
 
+        isJumping = false;
+        animator.SetBool("isJumping", false);
+        animator.SetInteger("direction", dirIndex);
     }
+
 }

@@ -16,20 +16,33 @@ public class PlayerMovement : MonoBehaviour
 
     private Animator animator;
 
+    public GameObject panelGameOver;
+    public GameObject player;
+    public GameObject gameCanvas;
+
+    private Rigidbody2D rb;
+
     void Start()
     {
         animator = GetComponent<Animator>();
         animator.SetBool("isJumping", false);
         animator.SetInteger("direction", 0); 
+
+    }
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        // Testa os 4 inputs
-        MovimentInput(KeyCode.UpArrow, Vector3.up, 0);
-        MovimentInput(KeyCode.DownArrow, Vector3.down, 1);
-        MovimentInput(KeyCode.RightArrow, Vector3.right, 2);
-        MovimentInput(KeyCode.LeftArrow, Vector3.left, 3);
+       
+            MovimentInput(KeyCode.UpArrow, Vector3.up, 0);
+            MovimentInput(KeyCode.DownArrow, Vector3.down, 1);
+            MovimentInput(KeyCode.RightArrow, Vector3.right, 2);
+            MovimentInput(KeyCode.LeftArrow, Vector3.left, 3);
+     
     }
 
     void MovimentInput(KeyCode key, Vector3 dir, int directionIndex)
@@ -70,22 +83,33 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isJumping", true);
         animator.SetInteger("direction", dirIndex);
 
-        Vector3 startPos = transform.position;
-        Vector3 endPos = transform.position + direction * force;
+        Vector2 startPos = rb.position;
+        Vector2  endPos = rb.position + (Vector2) (direction * force);
         float elapsed = 0f;
 
         while (elapsed < jumpDuration)
         {
-            transform.position = Vector3.Lerp(startPos, endPos, elapsed / jumpDuration);
+            rb.MovePosition(Vector2.Lerp(startPos, endPos, elapsed / jumpDuration));
             elapsed += Time.deltaTime;
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
-        transform.position = endPos;
+        rb.MovePosition(endPos);
 
         isJumping = false;
         animator.SetBool("isJumping", false);
         animator.SetInteger("direction", dirIndex);
+    }
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Danger"))
+        {
+            Debug.Log("vai morre");
+            panelGameOver.SetActive(true);
+            gameCanvas.SetActive(false);
+            Destroy(player);
+        }
     }
 
 }

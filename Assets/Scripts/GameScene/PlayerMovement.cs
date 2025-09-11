@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject gameCanvas;
 
     private Rigidbody2D rb;
+    public AudioSource audio;
 
     void Start()
     {
@@ -71,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
             if (!isJumping)
             {
                 StartCoroutine(Move(dir, currentForce, directionIndex));
+                audio.Play();
             }
 
             if (powerSlider) powerSlider.value = 0;

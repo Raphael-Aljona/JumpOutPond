@@ -9,16 +9,6 @@ public class GameOver : MonoBehaviour
     public GameObject gameCanvas;
 
     public Text scoreText;
-
-    private void Start()
-    {
-    }
-
-    void Update()
-    {
-        
-    }
-
     private void OnEnable()
     {
 

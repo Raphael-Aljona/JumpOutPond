@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     public AudioSource audio;
+    public AudioSource carCrashing;
 
     void Start()
     {
@@ -110,6 +111,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("vai morre");
             panelGameOver.SetActive(true);
             gameCanvas.SetActive(false);
+            carCrashing.Play();
             Destroy(player);
         }
     }

@@ -27,6 +27,9 @@ public class LaunchObject : MonoBehaviour
 
             GameObject obj = Instantiate(carSelect, spawnPoint.position, carSelect.transform.rotation);
 
+            if (!isRight)
+                obj.transform.rotation = Quaternion.Euler(180, 180, 270);
+
             Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
 
             if (rb != null)
@@ -49,7 +52,7 @@ public class LaunchObject : MonoBehaviour
         {
             Vector3 viewportPosition = Camera.main.WorldToViewportPoint(obj.transform.position);
 
-            if (viewportPosition.x < -1f || viewportPosition.x > 1.2 || viewportPosition.y < -1f || viewportPosition.y > 1)
+            if (viewportPosition.x < -1f || viewportPosition.x > 1.4 || viewportPosition.y < -1f || viewportPosition.y > 1)
             {
                 Destroy(obj);
                 break;

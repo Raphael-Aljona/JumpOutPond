@@ -23,7 +23,7 @@ public class PlayerScore : MonoBehaviour
             {
                 StartCoroutine(AddPoints());
             }
-            Debug.Log(score);
+            //Debug.Log(score);
         }
     }
 

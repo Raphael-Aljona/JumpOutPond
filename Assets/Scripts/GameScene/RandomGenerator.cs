@@ -6,7 +6,7 @@ public class RandomGenerator : MonoBehaviour
 
     //Area Jogavel
     public int playableWidth = 12; //x 
-    public int playableHeight = 8; //y
+    public int playableHeight = 20; //y
 
     public GameObject[] obstacleLines;
 
@@ -50,31 +50,31 @@ public class RandomGenerator : MonoBehaviour
 
     void GenerateRoom()
     {
-        // Verifica se há linhas de obstáculos para instanciar
-        if (obstacleLines != null && obstacleLines.Length > 0)
+        if (obstacleLines == null || obstacleLines.Length == 0) return;
+
+        // ponto inicial em Y
+        float currentY = 0f; // ou qualquer valor inicial desejado
+        float xPosition = 0f; // posição fixa em X para todas as linhas
+
+        // Defina quantas linhas você quer gerar
+        int numLines = playableHeight; // ou outra lógica
+
+        for (int i = 0; i < numLines; i++)
         {
-            // A posição inicial das linhas de obstáculos será logo acima da "moldura"
-            int firstObstacleY = 2;
-            int lastObstacleY = Mathf.Max(2, playableHeight - 3);
+            GameObject linePrefab = obstacleLines[Random.Range(0, obstacleLines.Length)];
 
-            // Gerar as linhas de obstáculos em posições verticais (uma em cima da outra)
-            for (int tileY = firstObstacleY; tileY <= lastObstacleY; tileY++)
-            {
-                // Aqui escolhemos uma linha de obstáculos aleatória do array
-                int lineIndex = Random.Range(0, obstacleLines.Length);
-                GameObject line = obstacleLines[lineIndex];
+            GameObject newLine = Instantiate(linePrefab, new Vector2(xPosition, currentY), Quaternion.identity, transform);
 
-                // Instancia a linha de obstáculos na posição correta (baseada no tileY)
-                Instantiate(line, new Vector2(0, tileY), Quaternion.identity, transform);
-            }
+            float lineHeight = newLine.GetComponent<BoxCollider2D>().size.y * newLine.transform.localScale.y;
+            Debug.Log($"Linha {i} tem altura {lineHeight}");
+
+            currentY += lineHeight;
         }
 
-        // Posicionamento do jogador
-        int playerSpawnX = -WallOffset + 1;
-        int playerSpawnY = 1; // Posição inicial do player (logo acima do chão)
-
-        // Gera o player no local correto
-        Instantiate(playerPrefab, new Vector2(playerSpawnX, playerSpawnY), Quaternion.identity, transform);
+        // por último, spawn do player
+        Vector2 playerPos = new Vector2(xPosition, 1f);
+        Instantiate(playerPrefab, playerPos, Quaternion.identity, transform);
     }
+
 
 }

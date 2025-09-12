@@ -27,7 +27,6 @@ public class GameOver : MonoBehaviour
             canvasGroup.alpha = 0f;
             StartCoroutine(FadeIn());
         }
-        //Debug.Log(score);
     }
     public void Restart()
     {

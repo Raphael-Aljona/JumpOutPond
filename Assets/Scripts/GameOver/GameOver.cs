@@ -35,6 +35,13 @@ public class GameOver : MonoBehaviour
         SceneManager.LoadScene("SampleScene");
     }
 
+    public void Menu()
+    {
+        Time.timeScale = 1f;
+        gameCanvas.SetActive(true);
+        SceneManager.LoadScene(0);
+    }
+
     public IEnumerator FadeIn()
     {
         float elapsed = 0f;
